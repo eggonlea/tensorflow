@@ -301,7 +301,7 @@ Status ProcessFunctionLibraryRuntime::PinArgsAndRets(
   // arguments. To make sure that the output producing nodes have assigned
   // devices, we assign them to arguments first.
   for (Node* node : graph->op_nodes()) {
-    if (node->type_string() == FunctionLibraryDefinition::kArgOp) {
+    if (node->IsArg()) {
       const AttrValue* attr_value;
       TF_RETURN_IF_ERROR(node->attrs().Find("index", &attr_value));
       int64 index = attr_value->i();
@@ -310,7 +310,7 @@ Status ProcessFunctionLibraryRuntime::PinArgsAndRets(
   }
 
   for (Node* node : graph->op_nodes()) {
-    if (node->type_string() == FunctionLibraryDefinition::kRetOp) {
+    if (node->IsRetval()) {
       if (output_devices.empty()) {
         // If output_devices are empty, the node producing retval
         // must have explicitly assigned device or a colocation constraint
@@ -581,8 +581,9 @@ Status ProcessFunctionLibraryRuntime::InstantiateMultiDevice(
   DumpGraph("Before calling Placer", graph.get());
   // TODO(b/124993244): Smartly merge options in nested defuns, and raise
   // exceptions/warnings in case where nested function call options are ignored.
-  Placer placer(graph.get(), &device_set, &session_options,
-                flr->device() /* Default device */);
+  Placer placer(graph.get(), &device_set, flr->device() /* Default device */,
+                options.config_proto.allow_soft_placement(),
+                options.config_proto.log_device_placement());
   TF_RETURN_IF_ERROR(placer.Run());
 
   DumpGraph("Before running POST_PLACEMENT passes", graph.get());
