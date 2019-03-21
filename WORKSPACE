@@ -1,5 +1,18 @@
 workspace(name = "org_tensorflow")
 
+android_sdk_repository (
+    name = "androidsdk",
+    api_level = 23,
+    build_tools_version = "23.0.2",
+    path = "/srv/Android/Sdk/"
+)
+
+android_ndk_repository(
+    name = "androidndk",
+    path = "/srv/Android/Sdk/ndk-bundle/",
+    api_level = 21,
+)
+
 http_archive(
     name = "io_bazel_rules_closure",
     sha256 = "a38539c5b5c358548e75b44141b4ab637bba7c4dc02b46b1f62a96d6433f56ae",
