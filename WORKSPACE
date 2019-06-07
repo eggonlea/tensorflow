@@ -1,5 +1,18 @@
 workspace(name = "org_tensorflow")
 
+android_sdk_repository (
+    name = "androidsdk",
+    api_level = 23,
+    build_tools_version = "23.0.2",
+    path = "/srv/Android/Sdk/"
+)
+
+android_ndk_repository(
+    name = "androidndk",
+    path = "/srv/Android/Sdk/ndk-bundle/",
+    api_level = 21,
+)
+
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
